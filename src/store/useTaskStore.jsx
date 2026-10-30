@@ -2,14 +2,6 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 
-export const  states = [
-    'Nueva tarea',
-    'En curso',
-    'Stand by' ,
-    'Completada',
-    'Cancelada',
-]
-
 export const ESTADOS = [
   'Nueva tarea',
   'En curso',
