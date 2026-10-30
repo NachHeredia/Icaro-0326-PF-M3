@@ -3,7 +3,7 @@ import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded'
 import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded'
 import { useThemeStore } from '../store/useThemeStore'
 
-// Botón para alternar entre modo claro y oscuro
+
 export default function ThemeToggle() {
   const mode = useThemeStore((state) => state.mode)
   const toggleMode = useThemeStore((state) => state.toggleMode)
