@@ -10,29 +10,6 @@ export const  states = [
     'Cancelada',
 ]
 
-/*export const useTaskStore = create  (persist (set) => {
-    tasks: [],
-    loading: false,
-    error: null,
-
-    setLoading: (loading) => set({ loading }),
-    setError: (error) => set({ error }),
-    setTasks: (tasks) => set({ tasks }),
-
-    addTask (data) => set ((state) => ({
-        tasks: [...state.tasks,
-            {id: crypto.randomUUID(), estado: 'Nueva tarea', ...data},
-        ],
-    })),
-
-    updateTask (id, changes) => 
-        set ((state) => ({
-            tasks: state.tasks.map((t) => (t.id === id ? { ...t, estado } : t)),
-        }))
-
-    deleteTask: (id) => set((state) => ({tasks: state.tasks.filter((t) => t.id !== id) })),
-})*/
-
 export const ESTADOS = [
   'Nueva tarea',
   'En curso',
