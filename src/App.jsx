@@ -1,8 +1,9 @@
 import { useMemo } from 'react'
-import { ThemeProvider, CssBaseline, Box, Typography } from '@mui/material'
+import { ThemeProvider, CssBaseline, Box } from '@mui/material'
 import { useThemeStore } from './store/useThemeStore'
 import { getTheme } from './theme/theme'
 import Sidebar from './components/SideBar'
+import TasksPage from './pages/TaskPage'
 
 function App() {
 
@@ -16,8 +17,10 @@ function App() {
       <CssBaseline />
       <Box sx={{ display: 'flex' }}>
         <Sidebar />
-        <Box component="main" sx={{ flexGrow: 1, p: 3, pt: { xs: 10, md: 3 } }}>
-          <Typography variant="h5">Tasks</Typography>
+        <Box 
+        component="main" 
+        sx={{ flexGrow: 1, p: 3, pt: { xs: 10, md: 3 } }}>
+          <TasksPage />
         </Box>
       </Box>
     </ThemeProvider>
