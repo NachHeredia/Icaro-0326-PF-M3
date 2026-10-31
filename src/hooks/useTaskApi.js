@@ -1,8 +1,48 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useTaskStore } from '../store/useTaskStore'
 
 const API_URL = 'https://api.restful-api.dev/objects'
 const JSON_HEADERS = { 'Content-Type': 'application/json' }
+const SEED_KEY = 'todo-seeded' 
+
+const dayStr = (offset) => {
+  const d = new Date()
+  d.setDate(d.getDate() + offset)
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${d.getFullYear()}-${month}-${day}`
+}
+
+const buildSampleTasks = () => [
+  {
+    titulo: 'Armar el store con Zustand',
+    descripcion: 'Definir el estado global de las tareas y sus acciones.',
+    fechaInicio: dayStr(-7),
+    fechaFin: dayStr(-5),
+    estado: 'Completadas',
+  },
+  {
+    titulo: 'Diseñar las columnas del tablero',
+    descripcion: 'Estilos con Material UI, modo claro y oscuro.',
+    fechaInicio: dayStr(-2),
+    fechaFin: dayStr(3),
+    estado: 'En curso',
+  },
+  {
+    titulo: 'Escribir el README del proyecto',
+    descripcion: 'Explicar cómo correr la app y qué tecnologías usa.',
+    fechaInicio: dayStr(1),
+    fechaFin: dayStr(5),
+    estado: 'Nueva tarea',
+  },
+  {
+    titulo: 'Subir el proyecto a Vercel',
+    descripcion: 'Publicar la app cuando el tablero esté terminado.',
+    fechaInicio: dayStr(6),
+    fechaFin: dayStr(8),
+    estado: 'Stand By',
+  },
+]
 
 const toApi = ({ titulo, descripcion, fechaInicio, fechaFin, estado }) => ({
   name: titulo,
@@ -25,7 +65,7 @@ async function request(url, options) {
   return response.json()
 }
 
-export default function useTasksApi() {
+export default function useTaskApi() {
   const tasks = useTaskStore((state) => state.tasks)
   const loading = useTaskStore((state) => state.loading)
   const error = useTaskStore((state) => state.error)
@@ -37,6 +77,8 @@ export default function useTasksApi() {
   const updateTask = useTaskStore((state) => state.updateTask)
   const changeStatus = useTaskStore((state) => state.changeStatus)
   const deleteTask = useTaskStore((state) => state.deleteTask)
+
+  const seedStarted = useRef(false)
 
   const run = async (action) => {
     setLoading(true)
@@ -51,6 +93,45 @@ export default function useTasksApi() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (seedStarted.current) return
+    seedStarted.current = true
+
+    let alreadySeeded = false
+    try {
+      alreadySeeded = localStorage.getItem(SEED_KEY) === '1'
+    } catch {
+      // sin acceso a localStorage se sigue igual
+    }
+    if (alreadySeeded || useTaskStore.getState().tasks.length > 0) return
+
+    const seed = async () => {
+      setLoading(true)
+      setError(null)
+      try {
+        for (const sample of buildSampleTasks()) {
+          const created = await request(API_URL, {
+            method: 'POST',
+            headers: JSON_HEADERS,
+            body: JSON.stringify(toApi(sample)),
+          })
+          addTask({ ...sample, id: created.id })
+        }
+        try {
+          localStorage.setItem(SEED_KEY, '1')
+        } catch {
+          // sin acceso a localStorage se sigue igual
+        }
+      } catch (e) {
+        setError(e.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    seed()
+  }, [addTask, setLoading, setError])
 
   useEffect(() => {
     const ids = useTaskStore.getState().tasks.map((t) => t.id)
