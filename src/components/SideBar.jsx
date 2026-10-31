@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from "react";
 import {
   AppBar,
   Box,
@@ -11,24 +11,26 @@ import {
   Toolbar,
   Typography,
   useMediaQuery,
-} from '@mui/material'
-import { useTheme } from '@mui/material/styles'
-import MenuRoundedIcon from '@mui/icons-material/MenuRounded'
-import TaskAltRoundedIcon from '@mui/icons-material/TaskAltRounded'
-import ThemeToggle from './ThemeToggle'
+} from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+import TaskAltRoundedIcon from "@mui/icons-material/TaskAltRounded";
+import ThemeToggle from "./ThemeToggle";
 
-export const SIDEBAR_WIDTH = 248
-const MARGIN = 16
+export const SIDEBAR_WIDTH = 248;
+const MARGIN = 16;
 
 function SidebarContent() {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', p: 2 }}>
+    <Box
+      sx={{ display: "flex", flexDirection: "column", height: "100%", p: 2 }}
+    >
       <Typography variant="h6" sx={{ px: 1.5, py: 1, letterSpacing: 1 }}>
         TO DO
       </Typography>
 
       <List sx={{ mt: 3, flexGrow: 1 }}>
-        <ListItemButton selected sx={{ borderRadius: '14px' }}>
+        <ListItemButton selected sx={{ borderRadius: "14px" }}>
           <ListItemIcon sx={{ minWidth: 40 }}>
             <TaskAltRoundedIcon color="primary" />
           </ListItemIcon>
@@ -43,13 +45,13 @@ function SidebarContent() {
         <ThemeToggle />
       </Box>
     </Box>
-  )
+  );
 }
 
 export default function Sidebar() {
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
-  const [open, setOpen] = useState(false)
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [open, setOpen] = useState(false);
 
   if (isMobile) {
     return (
@@ -58,7 +60,7 @@ export default function Sidebar() {
           position="fixed"
           color="transparent"
           elevation={0}
-          sx={{ borderRadius: 0, borderWidth: '0 0 1px 0' }}
+          sx={{ borderRadius: 0, borderWidth: "0 0 1px 0" }}
         >
           <Toolbar>
             <IconButton
@@ -71,7 +73,7 @@ export default function Sidebar() {
             </IconButton>
             <Typography
               variant="h6"
-              sx={{ flexGrow: 1, textAlign: 'center', letterSpacing: 1 }}
+              sx={{ flexGrow: 1, textAlign: "center", letterSpacing: 1 }}
             >
               TO DO
             </Typography>
@@ -84,28 +86,29 @@ export default function Sidebar() {
           open={open}
           onClose={() => setOpen(false)}
           ModalProps={{ keepMounted: true }}
-          PaperProps={{ sx: { width: SIDEBAR_WIDTH } }}
+          sx={{ "& .MuiDrawer-paper": { width: SIDEBAR_WIDTH } }}
         >
           <SidebarContent />
         </Drawer>
       </>
-    )
+    );
   }
 
   return (
     <Drawer
       variant="permanent"
-      sx={{ width: SIDEBAR_WIDTH + MARGIN * 2, flexShrink: 0 }}
-      PaperProps={{
-        sx: {
+      sx={{
+        width: SIDEBAR_WIDTH + MARGIN * 2,
+        flexShrink: 0,
+        "& .MuiDrawer-paper": {
           width: SIDEBAR_WIDTH,
           m: `${MARGIN}px`,
           height: `calc(100% - ${MARGIN * 2}px)`,
-          borderRadius: '24px',
+          borderRadius: "24px",
         },
       }}
     >
       <SidebarContent />
     </Drawer>
-  )
+  );
 }
