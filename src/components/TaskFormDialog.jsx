@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import {
   Alert,
   Button,
@@ -9,53 +9,62 @@ import {
   DialogTitle,
   Stack,
   TextField,
-} from '@mui/material'
-
+} from "@mui/material";
 
 const todayStr = () => {
-  const d = new Date()
-  const month = String(d.getMonth() + 1).padStart(2, '0')
-  const day = String(d.getDate()).padStart(2, '0')
-  return `${d.getFullYear()}-${month}-${day}`
-}
+  const d = new Date();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${month}-${day}`;
+};
 
-const emptyForm = () => ({
-  titulo: '',
-  descripcion: '',
-  fechaInicio: todayStr(),
-  fechaFin: todayStr(),
-})
+const initialValues = (task) =>
+  task
+    ? {
+        titulo: task.titulo,
+        descripcion: task.descripcion ?? "",
+        fechaInicio: task.fechaInicio,
+        fechaFin: task.fechaFin,
+      }
+    : {
+        titulo: "",
+        descripcion: "",
+        fechaInicio: todayStr(),
+        fechaFin: todayStr(),
+      };
 
-export default function TaskFormDialog({ open, onClose, onSubmit }) {
+export default function TaskFormDialog({ open, onClose, onSubmit, task }) {
+  const isEdit = Boolean(task);
+
   const {
     register,
     handleSubmit,
     reset,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm({ defaultValues: emptyForm() })
-
+  } = useForm({ defaultValues: initialValues(task) });
 
   useEffect(() => {
-    if (open) reset(emptyForm())
-  }, [open, reset])
+    if (open) reset(initialValues(task));
+  }, [open, reset, task]);
 
   const field = (name, rules) => {
-    const { ref, ...rest } = register(name, rules)
-    return { ...rest, inputRef: ref }
-  }
+    const { ref, ...rest } = register(name, rules);
+    return { ...rest, inputRef: ref };
+  };
 
   const onValid = async (values) => {
-    const ok = await onSubmit(values)
+    const ok = await onSubmit(values);
     if (ok) {
-      onClose()
+      onClose();
     } else {
-      setError('root.serverError', {
-        type: 'server',
-        message: 'No se pudo guardar la tarea. Revisá tu conexión e intentá de nuevo.',
-      })
+      setError("root.serverError", {
+        type: "server",
+        message:
+          "No se pudo guardar la tarea. Revisá tu conexión e intentá de nuevo.",
+      });
     }
-  }
+  };
 
   return (
     <Dialog
@@ -64,31 +73,33 @@ export default function TaskFormDialog({ open, onClose, onSubmit }) {
       slotProps={{
         backdrop: {
           sx: {
-            backdropFilter: 'blur(10px)',
-            WebkitBackdropFilter: 'blur(10px)',
-            backgroundColor: 'rgba(15, 23, 42, 0.25)',
+            backdropFilter: "blur(10px)",
+            WebkitBackdropFilter: "blur(10px)",
+            backgroundColor: "rgba(15, 23, 42, 0.25)",
           },
         },
         paper: {
-          component: 'form',
+          component: "form",
           noValidate: true,
           onSubmit: handleSubmit(onValid),
           sx: (theme) => ({
-            width: { xs: 'calc(100% - 24px)', sm: 480 },
-            maxWidth: 'calc(100% - 24px)',
-            height: { xs: 'calc(100% - 24px)', sm: 'auto' },
-            maxHeight: 'calc(100% - 24px)',
-            m: '12px',
-            borderRadius: '24px',
+            width: { xs: "calc(100% - 24px)", sm: 480 },
+            maxWidth: "calc(100% - 24px)",
+            height: { xs: "calc(100% - 24px)", sm: "auto" },
+            maxHeight: "calc(100% - 24px)",
+            m: "12px",
+            borderRadius: "24px",
             bgcolor:
-              theme.palette.mode === 'light'
-                ? 'rgba(255, 255, 255, 0.88)'
-                : 'rgba(30, 36, 48, 0.9)',
+              theme.palette.mode === "light"
+                ? "rgba(255, 255, 255, 0.88)"
+                : "rgba(30, 36, 48, 0.9)",
           }),
         },
       }}
     >
-      <DialogTitle sx={{ fontWeight: 700 }}>Nueva tarea</DialogTitle>
+      <DialogTitle sx={{ fontWeight: 700 }}>
+        {isEdit ? "Editar tarea" : "Nueva tarea"}
+      </DialogTitle>
 
       <DialogContent>
         <Stack spacing={2} sx={{ pt: 1 }}>
@@ -100,9 +111,10 @@ export default function TaskFormDialog({ open, onClose, onSubmit }) {
             label="Título"
             fullWidth
             autoFocus
-            {...field('titulo', {
-              required: 'Escribí un título',
-              maxLength: { value: 80, message: 'Máximo 80 caracteres' },
+            slotProps={{ inputLabel: { shrink: true } }}
+            {...field("titulo", {
+              required: "Escribí un título",
+              maxLength: { value: 80, message: "Máximo 80 caracteres" },
             })}
             error={!!errors.titulo}
             helperText={errors.titulo?.message}
@@ -113,20 +125,21 @@ export default function TaskFormDialog({ open, onClose, onSubmit }) {
             fullWidth
             multiline
             minRows={3}
-            {...field('descripcion', { required: 'Escribí una descripción' })}
+            slotProps={{ inputLabel: { shrink: true } }}
+            {...field("descripcion", { required: "Escribí una descripción" })}
             error={!!errors.descripcion}
             helperText={errors.descripcion?.message}
           />
 
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
             <TextField
               label="Fecha de inicio"
               type="date"
               fullWidth
               slotProps={{ inputLabel: { shrink: true } }}
-              {...field('fechaInicio', {
-                required: 'Elegí la fecha de inicio',
-                deps: ['fechaFin'], 
+              {...field("fechaInicio", {
+                required: "Elegí la fecha de inicio",
+                deps: ["fechaFin"],
               })}
               error={!!errors.fechaInicio}
               helperText={errors.fechaInicio?.message}
@@ -136,11 +149,11 @@ export default function TaskFormDialog({ open, onClose, onSubmit }) {
               type="date"
               fullWidth
               slotProps={{ inputLabel: { shrink: true } }}
-              {...field('fechaFin', {
-                required: 'Elegí la fecha de fin',
+              {...field("fechaFin", {
+                required: "Elegí la fecha de fin",
                 validate: (value, formValues) =>
                   value >= formValues.fechaInicio ||
-                  'No puede ser anterior a la fecha de inicio',
+                  "No puede ser anterior a la fecha de inicio",
               })}
               error={!!errors.fechaFin}
               helperText={errors.fechaFin?.message}
@@ -154,9 +167,13 @@ export default function TaskFormDialog({ open, onClose, onSubmit }) {
           Cancelar
         </Button>
         <Button type="submit" variant="contained" disabled={isSubmitting}>
-          {isSubmitting ? 'Guardando…' : 'Crear tarea'}
+          {isSubmitting
+            ? "Guardando…"
+            : isEdit
+              ? "Guardar cambios"
+              : "Crear tarea"}
         </Button>
       </DialogActions>
     </Dialog>
-  )
+  );
 }
