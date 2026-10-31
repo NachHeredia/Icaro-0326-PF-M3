@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { ThemeProvider, CssBaseline, Box, Typography } from '@mui/material'
 import { useThemeStore } from './store/useThemeStore'
 import { getTheme } from './theme/theme'
-import ThemeToggle from './components/ThemeToggle'
+import Sidebar from './components/SideBar'
 
 function App() {
 
@@ -14,9 +14,11 @@ function App() {
     <>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box sx={{ p: 3 }}>
-        <Typography variant="h6">TO DO</Typography>
-        <ThemeToggle />
+      <Box sx={{ display: 'flex' }}>
+        <Sidebar />
+        <Box component="main" sx={{ flexGrow: 1, p: 3, pt: { xs: 10, md: 3 } }}>
+          <Typography variant="h5">Tasks</Typography>
+        </Box>
       </Box>
     </ThemeProvider>
     </>
