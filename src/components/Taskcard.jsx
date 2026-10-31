@@ -13,7 +13,7 @@ import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded'
 import { ESTADOS } from '../store/useTaskStore'
 import { STATUS_STYLES } from '../theme/statusStyles'
 
-// "2026-10-31" -> Date local (sin corrimiento de zona horaria)
+
 const toDate = (value) => {
   if (!value) return null
   const [y, m, d] = value.split('-').map(Number)
@@ -23,7 +23,6 @@ const toDate = (value) => {
 const formatShort = (date) =>
   date.toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })
 
-// "29 oct – 2 nov (3d)"
 const formatRange = (start, end) => {
   const s = toDate(start)
   const e = toDate(end)
@@ -33,7 +32,6 @@ const formatRange = (start, end) => {
 }
 
 export default function TaskCard({ task, onChangeStatus, onDelete }) {
-  // Fecha en rojo si ya venció y la tarea sigue abierta
   const end = toDate(task.fechaFin)
   const today = new Date()
   today.setHours(0, 0, 0, 0)
@@ -51,7 +49,6 @@ export default function TaskCard({ task, onChangeStatus, onDelete }) {
     >
       <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
         <Stack spacing={1.25}>
-          {/* Título + borrar */}
           <Stack
             direction="row"
             alignItems="flex-start"
@@ -71,7 +68,6 @@ export default function TaskCard({ task, onChangeStatus, onDelete }) {
             </IconButton>
           </Stack>
 
-          {/* Descripción (máx. 2 líneas) */}
           {task.descripcion && (
             <Typography
               variant="body2"
@@ -87,7 +83,6 @@ export default function TaskCard({ task, onChangeStatus, onDelete }) {
             </Typography>
           )}
 
-          {/* Fechas */}
           <Typography
             variant="caption"
             sx={{ color: overdue ? 'error.main' : 'text.secondary' }}
@@ -95,7 +90,6 @@ export default function TaskCard({ task, onChangeStatus, onDelete }) {
             {formatRange(task.fechaInicio, task.fechaFin)}
           </Typography>
 
-          {/* Estado desplegable: al cambiarlo, la tarea pasa de columna */}
           <Select
             size="small"
             fullWidth

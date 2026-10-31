@@ -35,7 +35,7 @@ function SidebarContent() {
             <TaskAltRoundedIcon color="primary" />
           </ListItemIcon>
           <ListItemText
-            primary="Tasks"
+            primary="Tareas"
             primaryTypographyProps={{ fontWeight: 600 }}
           />
         </ListItemButton>
